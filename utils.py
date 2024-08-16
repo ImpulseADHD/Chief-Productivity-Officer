@@ -1,5 +1,17 @@
 import re
 import discord
+from datetime import datetime
+import time
+
+def parse_seconds_to_hms(seconds: int) -> str:
+    """Convert seconds into a formatted string with hours, minutes, and seconds."""
+    
+    # Calculate hours, minutes, and seconds
+    hours, remainder = divmod(seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    
+    # Return the formatted string
+    return f"{hours}h {minutes}m {seconds}s"
 
 def parse_duration(duration_str):
     match = re.match(r'(\d+)\s*(s|secs?|seconds?|m|mins?|minutes?|h|hrs?|hours?|d|days?)', duration_str, re.IGNORECASE)
@@ -36,6 +48,7 @@ def parse_mentions(ctx, mentions):
                 members.append(member)
     
     return list(set(members))  # Remove duplicates
+
 
 def is_manager(ctx):
     guild_id = ctx.guild.id
