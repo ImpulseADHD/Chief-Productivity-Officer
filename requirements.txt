@@ -2,3 +2,6 @@ discord.py
 python-dotenv
 sqlite3
 asyncio
+re
+datetime
+time
