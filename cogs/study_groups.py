@@ -14,7 +14,7 @@ class StudyGroups(commands.Cog):
 
     @app_commands.command(name="create_group", description="Create a new study group")
     @app_commands.describe(name="Name of the study group", max_size="Maximum number of members")
-    @app_commands.check(is_manager)
+    @app_is_manager()
     async def create_group(self, interaction: discord.Interaction, name: str, max_size: int = 10):
         # Check if a group with the same name already exists
         existing_group = await self.bot.db.get_study_group_by_name(interaction.guild_id, name)
@@ -69,8 +69,9 @@ class StudyGroups(commands.Cog):
             f"You've been assigned the role {session_role.mention}."
         )
 
-    @app_commands.command(name="leave_group", description="Leave a study group")
-    @app_commands.describe(name="Name of the study group to leave")
+    @app_commands.command(name="end_group", description="End a study group")
+    @app_commands.describe(name="Name of the study group to end")
+    @app_is_manager()
     async def leave_group(self, interaction: discord.Interaction, name: str):
         group = await self.bot.db.get_study_group_by_name(interaction.guild_id, name)
         if not group:
