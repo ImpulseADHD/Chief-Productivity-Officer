@@ -115,6 +115,13 @@ class Database:
             self.conn.commit()
             logger.info(f"Created study group: {name} (ID: {group_id})")
             return group_id
+    async def get_study_group_by_name(self, name, guild_id):
+        async with self.lock:
+            cursor = self.conn.cursor()
+            cursor.execute('SELECT * FROM study_groups WHERE name = ? AND guild_id = ?', (name, guild_id))
+            group = cursor.fetchone()
+            logger.debug(f"Retrieved study group by name '{name}' for guild {guild_id}: {'Found' if group else 'Not found'}")
+            return group
 
     async def get_study_group(self, guild_id):
         async with self.lock:
@@ -172,6 +179,15 @@ class Database:
             members = [row['user_id'] for row in cursor.fetchall()]
             logger.debug(f"Retrieved {len(members)} members for group {group_id}")
             return members
+        
+    async def get_all_study_groups(self, guild_id):
+        async with self.lock:
+            cursor = self.conn.cursor()
+            cursor.execute('SELECT * FROM study_groups WHERE guild_id = ?', (guild_id,))
+            groups = cursor.fetchall()
+            logger.debug(f"Retrieved {len(groups)} study groups for guild {guild_id}")
+            return groups
+
 
     async def update_group_roles(self, group_id, admin_role_id, session_role_id):
         async with self.lock:
@@ -327,3 +343,5 @@ class Database:
             tasks = cursor.fetchall()
             logger.debug(f"Retrieved {len(tasks)} tasks for user {user_id}")
             return tasks
+        
+

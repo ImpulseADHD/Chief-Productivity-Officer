@@ -11,8 +11,8 @@ logger = logging.getLogger(__name__)
 
 # Load environment variables
 load_dotenv()
-# TOKEN = os.getenv('DISCORD_BOT_TOKEN')
-TOKEN = "MTI2OTIzMTA3NDgwMjY2NzUzMA.G8SosC.buiMSDkAxJBCMZ6TH3nbKaHuWDJGvTvXgaGlec"
+TOKEN = os.getenv('DISCORD_BOT_TOKEN')
+
 BOT_DEVELOPER_ID = os.getenv('BOT_DEVELOPER_ID')
 
 # Set up intents
@@ -44,6 +44,11 @@ class CPO(commands.Bot):
         logger.info(f'{self.user} has connected to Discord!')
         logger.info(f"Guilds: {len(self.guilds)}")
         logger.info(f"Users: {len(set(self.get_all_members()))}")
+
+        synced = await self.tree.sync()
+        logger.info(f"Synced {len(synced)} command(s)")
+        for command in synced:
+            logger.info(f"  - {command.name}")
 
     async def close(self):
         await self.db.close()
