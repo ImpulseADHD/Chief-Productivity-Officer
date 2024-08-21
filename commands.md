@@ -1,82 +1,47 @@
-
 # Chief Productivity Officer (CPO) Discord Bot Commands
-
-This document provides a detailed explanation of all commands available in the Chief Productivity Officer Discord bot.
 
 ## Study Groups
 
-1. **Create a Study Group**
-   - Command: `/create_group <name> [max_size]`
-   - Description: Creates a new study group with an optional maximum size.
-   - Usage: Assigns a role to the group and creates a voice channel.
-   - Example: `/create_group study_buddies 5`
-
-2. **Join an Existing Study Group**
-   - Command: `/join_group`
-   - Description: Joins the user to an existing study group.
-   - Usage: Assigns the group role to the user and moves them to the voice channel if it exists.
-   - Example: `/join_group`
-
-3. **Leave the Current Study Group**
-   - Command: `/leave_group`
-   - Description: Leaves the user from the current study group.
-   - Usage: Removes the group role from the user.
-   - Example: `/leave_group`
-
-4. **End the Current Study Group (Creator Only)**
-   - Command: `/end_group`
-   - Description: Ends the current study group.
-   - Usage: Deletes the group role and voice channel.
-   - Example: `/end_group`
+- `/create_group <name> [max_size]`: Create a new study group
+- `/join_group`: Join the existing study group
+- `/leave_group`: Leave the current study group
+- `/end_group`: End the current study group (group creator only)
 
 ## Pomodoro
 
-1. **Start a Pomodoro Session**
-   - Command: `/start_pomodoro [focus] [short_break] [long_break]`
-   - Description: Starts a Pomodoro session with optional timings.
-   - Usage: Creates a voice channel if it doesn't exist and moves the user.
-   - Example: `/start_pomodoro 25 5 15`
+- `/start_pomodoro [focus] [short_break] [long_break]`: Start a Pomodoro session
+- `/end_pomodoro`: End the current Pomodoro session
+- `/pause_pomodoro`: Pause the current Pomodoro session
+- `/resume_pomodoro`: Resume the paused Pomodoro session
 
-2. **End the Current Pomodoro Session**
-   - Command: `/end_pomodoro`
-   - Description: Ends the current Pomodoro session.
-   - Example: `/end_pomodoro`
+## Voice Channels
 
-3. **Pause the Current Pomodoro Session**
-   - Command: `/pause_pomodoro`
-   - Description: Pauses the current Pomodoro session.
-   - Example: `/pause_pomodoro`
+- `/create_vc [name] [visible]`: Create a voice channel for the study group
+- `/delete_vc`: Delete the voice channel for the study group
+- `/set_vc_cleanup_time <minutes>`: Set the time before empty voice channels are deleted
+- `/set_vc_category <category>`: Set the category for study group voice channels
+- `/vc_audit [days]`: Audit voice channel usage
 
-4. **Resume the Paused Pomodoro Session**
-   - Command: `/resume_pomodoro`
-   - Description: Resumes the paused Pomodoro session.
-   - Example: `/resume_pomodoro`
+## Task List
+
+- `/task_add <description>`: Add a new task to your list
+- `/task_complete <task_id>`: Mark a task as complete
+- `/task_list`: List your current tasks
+
+## Check-in
+
+- `/checkin <duration> <mention>`: Start a check-in session
+- `/checkin_channels <channels...>`: Set the channels where check-in commands can be used
 
 ## Management
 
-1. **Add a Bot Developer**
-   - Command: `/add_bot_developer <user>`
-   - Description: Adds a user as a bot developer (Bot Developer only).
-   - Example: `/add_bot_developer @User`
+- `/add_bot_developer <user>`: Add a bot developer (Bot Developer only)
+- `/add_guild_manager <user>`: Add a guild manager (Bot Developer only)
+- `/remove_guild_manager <user>`: Remove a guild manager (Bot Developer only)
+- `/list_managers`: List all managers for this server
 
-2. **Add a Guild Manager**
-   - Command: `/add_guild_manager <user>`
-   - Description: Adds a user as a guild manager (Bot Developer only).
-   - Example: `/add_guild_manager @User`
+## Utility
 
-3. **Remove a Guild Manager**
-   - Command: `/remove_guild_manager <user>`
-   - Description: Removes a user from the guild managers (Bot Developer only).
-   - Example: `/remove_guild_manager @User`
+- `/check_perms`: Check bot permissions in the current channel
 
-4. **List All Managers**
-   - Command: `/list_managers`
-   - Description: Lists all managers for the server.
-   - Example: `/list_managers`
-
-## Notes
-
-- Users can only be in one study group at a time.
-- Joining a group automatically assigns a role and moves the user to the group's voice channel.
-- Pomodoro notifications are sent to the group's voice channel or a text channel if the voice channel is not available.
-- Only group creators can end groups, and only bot developers can manage bot permissions.
+Note: All commands use slash command syntax (/).
