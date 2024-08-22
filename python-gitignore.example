@@ -1,0 +1,163 @@
+# Check https://github.com/github/gitignore/blob/main/Python.gitignore for an exhaustive gitignore example for Python projects.
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.eggs/
+dist/
+build/
+develop/
+*.egg-info/
+.venv/
+venv/
+env/
+
+# pytest
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# IDE files
+*.idea/
+.vscode/
+*.iml
+.project
+.classpath
+
+# Local configuration
+*.local
+.env
+*.env.local
+.env.development
+.env.production
+
+# Logs
+logs/
+
+# Temporary files
+*.tmp
+*.bak
+*~
+
+# Django
+local_settings.py
+
+# Flask
+instance/
+
+# Scrapy
+.scrapy/
+
+# Sphinx documentation
+docs/_build/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.editorconfig
+.vimrc
+.gitattributes
+
+# Other
+*.log
+*.csv
+*.xlsx
+*.pdf
+*.zip
+*.rar
+*.tar.gz
+*.7z
+*.gz
+*.bz2
+*.xz
+*.dmg
+*.iso
+*.exe
+*.dll
+*.msi
+*.deb
+*.rpm
+*.pkg
+*.app
+*.bin
+*.dat
+*.db
+*.sql
+*.xml
+*.json
+*.yaml
+*.yml
+*.ini
+*.conf
+*.txt
+*.md
+*.html
+*.css
+*.js
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.ttf
+*.otf
+*.woff
+*.woff2
+*.eot
+*.mp3
+*.wav
+*.ogg
+*.mp4
+*.avi
+*.mov
+*.webm
+*.mkv
+*.flv
+*.swf
+*.pdf
+*.doc
+*.docx
+*.xls
+*.xlsx
+*.ppt
+*.pptx
+*.odt
+*.ods
+*.odp
+*.rtf
+*.csv
+*.txt
+*.log
+*.zip
+*.rar
+*.tar.gz
+*.7z
+*.gz
+*.bz2
+*.xz
+*.dmg
+*.iso
+*.exe
+*.dll
+*.msi
+*.deb
+*.rpm
+*.pkg
+*.app
+*.bin
+*.dat
+*.db
+*.sql
+*.xml
+*.json
+*.yaml
