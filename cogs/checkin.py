@@ -41,7 +41,7 @@ class CheckinSession:
             "What's your status?",
             "Any progress to report?"
         ]
-        logging.debug("Check-in session created with duration: %s seconds", duration)
+        logger.debug("Check-in session created with duration: %s seconds", duration)
 
     """Helper and Update Functions"""
 
@@ -54,7 +54,7 @@ class CheckinSession:
     def move_to_absent(self):
         # Move all present members to absent at the start of each reminder. 
         self.present = []
-        logging.debug("Moving members to absent.")
+        logger.debug("Moving members to absent.")
         return self.members  # Everyone is absent until marked present again
 
 
@@ -65,14 +65,14 @@ class CheckinSession:
         for member in self.members:
             if member not in self.present:
                 self.absences[member] += 1
-                logging.debug("Incrementing absence for member: %s", member.display_name)
+                logger.debug("Incrementing absence for member: %s", member.display_name)
             if self.absences[member] >= 3:
                 removed_members.append(member)
         for member in removed_members:
             self.members.remove(member)
             del self.absences[member]
             self.exited.append(member)
-            logging.info("Member removed due to absences: %s", member.display_name)
+            logger.info("Member removed due to absences: %s", member.display_name)
         return removed_members
     
 
@@ -124,7 +124,7 @@ class CheckinSession:
     ## Button Function - End Session
     async def end_session(self, interaction: discord.Interaction, bot: commands.Bot, button_session_id: str, session):
         # End the session and send the final message
-        logging.info(f"End session initiated by {interaction.user.display_name} for session {button_session_id}.")
+        logger.info(f"End session initiated by {interaction.user.display_name} for session {button_session_id}.")
 
         # Verify that the user is the creator
         if not session.can_end(interaction.user):
@@ -140,37 +140,37 @@ class CheckinSession:
 
         try:
             # Send the final message to the channel
-            logging.debug(f"Sending final end session message in session {button_session_id}.")
+            logger.debug(f"Sending final end session message in session {button_session_id}.")
             await interaction.channel.send(embed=embed)
 
         except discord.HTTPException as e:
-            logging.error(f"Failed to send end session message for session {button_session_id}: {str(e)}")
+            logger.error(f"Failed to send end session message for session {button_session_id}: {str(e)}")
 
         cog = bot.get_cog("CheckinCog")
         # Disable the buttons of the last reminder message
         if cog:
             if button_session_id in cog.active_sessions:
-                logging.info(f"Deleting session for session ID {button_session_id} from active_sessions.")
+                logger.info(f"Deleting session for session ID {button_session_id} from active_sessions.")
                 del cog.active_sessions[button_session_id]
                 # Explicitly clear the session's data
                 await self.clear_session_data()
             else:
-                logging.warning(f"Tried to delete session for session ID {button_session_id} but it was already deleted.")
+                logger.warning(f"Tried to delete session for session ID {button_session_id} but it was already deleted.")
 
             # Disable buttons in the last reminder message using the method from the CheckinCog class
             try:
                 # Disable buttons in the last reminder message using the method from the CheckinCog class
                 await cog.disable_previous_buttons(session, interaction.channel)
-                logging.info(f"End Session Function: Successfully disabled previous buttons in session {button_session_id}.")
+                logger.info(f"End Session Function: Successfully disabled previous buttons in session {button_session_id}.")
             except discord.HTTPException as e:
-                logging.error(f"End Session Function: Failed to disable previous buttons in session {button_session_id}: {str(e)}")
+                logger.error(f"End Session Function: Failed to disable previous buttons in session {button_session_id}: {str(e)}")
             except Exception as e:
-                logging.error(f"End Session Function: An error occurred while disabling previous buttons in session {button_session_id}: {str(e)}")
+                logger.error(f"End Session Function: An error occurred while disabling previous buttons in session {button_session_id}: {str(e)}")
 
         
         
         # Send a confirmation message to the creator (optional)
-        logging.info(f"Check-in session {button_session_id} successfully ended by {interaction.user.display_name}.")
+        logger.info(f"Check-in session {button_session_id} successfully ended by {interaction.user.display_name}.")
 
         # Return the response message for the user
         return f"Check-in session has been manually ended by {session.creator.mention}."
@@ -192,7 +192,7 @@ class CheckinSession:
         self.absences.clear()
         self.last_reminder_message = None
         self.reminder_count = 0
-        logging.debug(f"Session data for session {self.session_id} cleared successfully.")
+        logger.debug(f"Session data for session {self.session_id} cleared successfully.")
 
 
 
@@ -204,7 +204,7 @@ class CheckinCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.active_sessions = {}
-        logging.debug("Check-in Cog initialized.")
+        logger.debug("Check-in Cog initialized.")
 
     
 
@@ -219,7 +219,7 @@ class CheckinCog(commands.Cog):
         # Check if a session exists by session ID
         session: CheckinSession = self.active_sessions.get(session_id)
         if not session:
-            logging.warning(f"Session with ID {session_id} does not exist.")
+            logger.warning(f"Session with ID {session_id} does not exist.")
             await interaction.response.send_message("The session you're interacting with no longer exists.", ephemeral=True)
             return None
         return session
@@ -228,7 +228,7 @@ class CheckinCog(commands.Cog):
     async def check_user_in_session(self, session: CheckinSession, user: discord.User, interaction: discord.Interaction) -> bool:
         # Check if the user is part of the session
         if user not in session.members:
-            logging.info(f"User {user.display_name} tried to interact with a session they're not part of.")
+            logger.info(f"User {user.display_name} tried to interact with a session they're not part of.")
             await interaction.response.send_message("You are not part of this session.", ephemeral=True)
             return False
         return True
@@ -319,10 +319,10 @@ class CheckinCog(commands.Cog):
             
             # Check if session still exists in active_sessions
             if session.session_id not in self.active_sessions:
-                logging.info(f"Session {session.session_id} has ended and was removed. Stopping reminder loop.")
+                logger.info(f"Session {session.session_id} has ended and was removed. Stopping reminder loop.")
                 return  # Break out of the reminder loop since the session has ended.
             
-            logging.info(f"Session {session.session_id} exists and it continues.")
+            logger.info(f"Session {session.session_id} exists and it continues.")
             
             # Increment reminder_count
             session.increment_reminder()
@@ -341,7 +341,7 @@ class CheckinCog(commands.Cog):
                     description="No more members are left in the session.",
                     color=discord.Color.red()
                 )
-                logging.info("Session ended due to no remaining members.")
+                logger.info("Session ended due to no remaining members.")
                 await channel.send(embed=embed)
                 return
 
@@ -353,7 +353,7 @@ class CheckinCog(commands.Cog):
 
             session.last_reminder_message = reminder_message
 
-            logging.info(f"Reminder {session.reminder_count} sent with updated members.")
+            logger.info(f"Reminder {session.reminder_count} sent with updated members.")
 
 
     ## Message Function - Disable Previous Buttons    
@@ -377,14 +377,14 @@ class CheckinCog(commands.Cog):
 
                 # Edit the last reminder message to disable the buttons
                 await last_message.edit(view=new_view)
-                logging.info("Disabled buttons in the previous reminder message.")
+                logger.info("Disabled buttons in the previous reminder message.")
 
             except discord.NotFound:
-                logging.warning(f"Previous reminder message not found (ID: {session.last_reminder_message.id}).")
+                logger.warning(f"Previous reminder message not found (ID: {session.last_reminder_message.id}).")
             except discord.HTTPException as e:
-                logging.error(f"Failed to disable buttons in previous reminder message: {str(e)}")
+                logger.error(f"Failed to disable buttons in previous reminder message: {str(e)}")
             except Exception as e:
-                logging.error(f"Unexpected error disabling buttons: {str(e)}")
+                logger.error(f"Unexpected error disabling buttons: {str(e)}")
 
 
 
@@ -401,24 +401,24 @@ class CheckinCog(commands.Cog):
         
         # Check - Wrong format entered, hence function returned None
         if duration_seconds == None:
-            logging.warning("Wrong duration format entered.")
+            logger.warning("Wrong duration format entered.")
             await interaction.response.send_message(f"Wrong duration format used. Use \'2d 14h 25m 30s\' or use day(s) hour(s)/hr(s) minute(s)/min(s) second(s)/sec(s)", ephemeral=True)
             return
         # Check - Duration entered is too short
         if duration_seconds < CheckinSession.min_duration:
-            logging.warning("Attempted to start a session with insufficient duration.")
+            logger.warning("Attempted to start a session with insufficient duration.")
             await interaction.response.send_message(f"Duration must be at least {parse_seconds_to_hms(CheckinSession.min_duration)}", ephemeral=True)
             return
 
         # Check - Too many members
         if len(members) > CheckinSession.max_members:
-            logging.warning("Attempted to start a session with too many members.")
+            logger.warning("Attempted to start a session with too many members.")
             await interaction.response.send_message(f"A session can't have more than {CheckinSession.max_members} members.")
             return
 
         # Check - Valid members
         if not members:
-            logging.error("No valid members found for check-in session.")
+            logger.error("No valid members found for check-in session.")
             await interaction.response.send_message("No valid members found in the mentions. Please mention valid users or roles.", ephemeral=True)
             return
 
@@ -438,7 +438,7 @@ class CheckinCog(commands.Cog):
         # Create a new session and save it
         session = CheckinSession(session_id=session_id, creator=interaction.user, channel_id=interaction.channel.id, members=members, duration=duration_seconds)
         self.active_sessions[session_id] = session  # Store session by its ID
-        logging.info(f"Check-in session with ID {session_id} started by {interaction.user.display_name} in channel {interaction.channel.id}.")
+        logger.info(f"Check-in session with ID {session_id} started by {interaction.user.display_name} in channel {interaction.channel.id}.")
 
         # Send the initial message with buttons
         await self.send_initial_message(interaction.channel, session)
@@ -457,12 +457,12 @@ class CheckinCog(commands.Cog):
             return  # Ignore non-button interactions
 
         custom_id = interaction.data.get('custom_id')
-        logging.info(f"Custom ID Looks like this: {custom_id}")
+        logger.info(f"Custom ID Looks like this: {custom_id}")
         
         if custom_id:  # Ensure custom_id exists
             action, button_session_id = custom_id.split('_')
-            logging.info(f'SessionID: {button_session_id}')
-            logging.info(f"Action: {action}")  # Extract the action and session_id
+            logger.info(f'SessionID: {button_session_id}')
+            logger.info(f"Action: {action}")  # Extract the action and session_id
 
         session = await self.check_session_exists(button_session_id, interaction)
         if not session:
@@ -483,7 +483,7 @@ class CheckinCog(commands.Cog):
 
             # Handle End Button
             elif action == 'end':
-                logging.debug(f"User {interaction.user.display_name} clicked the 'End' button for session {button_session_id}.")
+                logger.debug(f"User {interaction.user.display_name} clicked the 'End' button for session {button_session_id}.")
 
                 # Retrieve the session using session_id
                 session =  self.active_sessions.get(button_session_id)
@@ -494,24 +494,24 @@ class CheckinCog(commands.Cog):
                     try:
                         # Disable buttons in the last reminder message using the method from the CheckinCog class
                         await self.disable_previous_buttons(session, interaction.channel)
-                        logging.info(f"Cog Event Listener: Successfully disabled previous buttons in session {button_session_id}.")
+                        logger.info(f"Cog Event Listener: Successfully disabled previous buttons in session {button_session_id}.")
                     except discord.HTTPException as e:
-                        logging.error(f"Cog Event Listener: Failed to disable previous buttons in session {button_session_id}: {str(e)}")
+                        logger.error(f"Cog Event Listener: Failed to disable previous buttons in session {button_session_id}: {str(e)}")
                     except Exception as e:
-                        logging.error(f"Cog Event Listener: An error occurred while disabling previous buttons in session {button_session_id}: {str(e)}")
+                        logger.error(f"Cog Event Listener: An error occurred while disabling previous buttons in session {button_session_id}: {str(e)}")
                     
-                    logging.info(f"User {interaction.user.display_name} is the creator and has permission to end the session.")
+                    logger.info(f"User {interaction.user.display_name} is the creator and has permission to end the session.")
                     response = await session.end_session(interaction, self.bot, button_session_id, session)
                     
-                    logging.debug("Sending response message to the user indicating the session was ended.")
+                    logger.debug("Sending response message to the user indicating the session was ended.")
                     await interaction.response.send_message(response)
                     
-                    logging.info("Session ended successfully. No further interaction will be processed.")
+                    logger.info("Session ended successfully. No further interaction will be processed.")
                     return
                 
                 else:
                     # If the user is not the creator or session is not found, log the denial
-                    logging.warning(f"User {interaction.user.display_name} tried to end the session but is not the creator or session does not exist.")
+                    logger.warning(f"User {interaction.user.display_name} tried to end the session but is not the creator or session does not exist.")
                     result = "Only the session creator can end the session."
 
         # If there's a result, send it as a follow-up
@@ -528,4 +528,4 @@ class CheckinCog(commands.Cog):
 """Setup Bot"""
 async def setup(bot):
     await bot.add_cog(CheckinCog(bot))
-    logging.info("CheckinCog loaded successfully.")
+    logger.info("CheckinCog loaded successfully.")
