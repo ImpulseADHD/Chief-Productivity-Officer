@@ -1,5 +1,6 @@
 import os
 import discord
+from discord import app_commands
 from discord.ext import commands
 from dotenv import load_dotenv
 from database import Database
@@ -17,10 +18,12 @@ BOT_DEVELOPER_ID = os.getenv('BOT_DEVELOPER_ID')
 
 # Set up intents
 intents = discord.Intents.default()
-intents.message_content = True
-intents.members = True
 intents.guilds = True
+intents.members = True
+intents.messages = True
+intents.message_content = True
 intents.voice_states = True
+intents.reactions = True
 
 class CPO(commands.Bot):
     def __init__(self):
