@@ -10,7 +10,7 @@ import uuid
 
 # Setting up basic configuration for logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-logger = logging(__name__)
+logger = logging.getLogger(__name__)
 
 class CheckinSession:
     min_duration = 20  # 20 seconds as the minimum duration
